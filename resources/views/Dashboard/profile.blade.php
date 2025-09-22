@@ -67,6 +67,19 @@
                                     </div>
 
                                     <div class="mb-3">
+                                        <label for="username" class="form-label">Username</label>
+                                        <input id="username" type="text"
+                                            class="form-control @error('username') is-invalid @enderror" name="username"
+                                            value="{{ old('username', Auth::user()->username) }}" required>
+                                        <small class="form-text text-muted">Only letters, numbers, and underscores allowed</small>
+                                        @error('username')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-3">
                                         <label for="email" class="form-label">Email Address</label>
                                         <input id="email" type="email"
                                             class="form-control @error('email') is-invalid @enderror" name="email"
@@ -101,7 +114,7 @@
                                             Authenticator</small>
                                     </div>
                                     <div>
-                                        @if (Auth::user()->google2fa_secret)
+                                        @if (Auth::user()->mfa_enabled && Auth::user()->google2fa_secret)
                                             <span class="badge bg-success mb-2">Enabled</span><br>
                                             <form method="POST" action="{{ route('2fa.disable') }}"
                                                 style="display: inline;">
@@ -112,11 +125,20 @@
                                                     <i class="fas fa-times"></i> Disable
                                                 </button>
                                             </form>
-                                        @else
-                                            <span class="badge bg-warning mb-2">Disabled</span><br>
+                                        @elseif (Auth::user()->google2fa_secret && !Auth::user()->mfa_enabled)
+                                            <span class="badge bg-warning mb-2">Setup Incomplete</span><br>
                                             <a href="{{ route('2fa.setup') }}" class="btn btn-outline-primary btn-sm">
-                                                <i class="fas fa-plus"></i> Enable
+                                                <i class="fas fa-qrcode"></i> Complete Setup
                                             </a>
+                                        @else
+                                            <span class="badge bg-secondary mb-2">Disabled</span><br>
+                                            <form method="POST" action="{{ route('2fa.enable') }}"
+                                                style="display: inline;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-plus"></i> Enable MFA
+                                                </button>
+                                            </form>
                                         @endif
                                     </div>
                                 </div>

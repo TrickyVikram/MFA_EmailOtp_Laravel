@@ -20,10 +20,12 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'username',
         'password',
         'google2fa_secret',
         'email_otp',
         'email_otp_expires_at',
+        'mfa_enabled',
     ];
 
     /**
@@ -48,6 +50,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'email_otp_expires_at' => 'datetime',
+            'mfa_enabled' => 'boolean',
             'password' => 'hashed',
         ];
     }

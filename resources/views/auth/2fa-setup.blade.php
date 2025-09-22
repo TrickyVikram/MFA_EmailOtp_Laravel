@@ -12,7 +12,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <h5>Step 1: Install Google Authenticator</h5>
+                                <h5>Step 1: Install Google/microsoft Authenticator</h5>
                                 <p>Download and install the Google Authenticator app on your mobile device.</p>
 
                                 <h5>Step 2: Scan QR Code</h5>

@@ -71,6 +71,9 @@ class TwoFAController extends Controller
         $valid = $google2fa->verifyKey($user->google2fa_secret, $request->one_time_password);
 
         if ($valid) {
+            // Enable MFA after successful verification
+            $user->update(['mfa_enabled' => true]);
+            
             session(['2fa_verified' => true]);
             return redirect()->route('dashboard')->with('success', 'Google Authenticator has been set up successfully!');
         }

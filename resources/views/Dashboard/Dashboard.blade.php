@@ -54,12 +54,12 @@
                                 <p>Your account is secured with:</p>
                                 <ul>
                                     <li><i class="fas fa-envelope text-success"></i> Email OTP Verification</li>
-                                    @if (Auth::user()->google2fa_secret)
-                                        <li><i class="fas fa-mobile-alt text-success"></i> Google Authenticator (Enabled)
-                                        </li>
+                                    @if (Auth::user()->mfa_enabled && Auth::user()->google2fa_secret)
+                                        <li><i class="fas fa-mobile-alt text-success"></i> Google Authenticator (Active)</li>
+                                    @elseif (Auth::user()->google2fa_secret)
+                                        <li><i class="fas fa-mobile-alt text-warning"></i> Google Authenticator (Setup Incomplete)</li>
                                     @else
-                                        <li><i class="fas fa-mobile-alt text-warning"></i> Google Authenticator (Not Setup)
-                                        </li>
+                                        <li><i class="fas fa-mobile-alt text-secondary"></i> Google Authenticator (Disabled)</li>
                                     @endif
                                 </ul>
                             </div>
@@ -72,13 +72,21 @@
                                 <h6><i class="fas fa-shield-alt"></i> Security Status</h6>
                             </div>
                             <div class="card-body">
-                                @if (!Auth::user()->google2fa_secret)
+                                @if (!Auth::user()->mfa_enabled)
+                                    <div class="alert alert-info p-2">
+                                        <small><strong>MFA Disabled:</strong></small><br>
+                                        <small>Enable MFA for enhanced security.</small>
+                                    </div>
+                                    <a href="{{ route('profile') }}" class="btn btn-primary btn-sm w-100">
+                                        <i class="fas fa-shield-alt"></i> Enable MFA
+                                    </a>
+                                @elseif (!Auth::user()->google2fa_secret)
                                     <div class="alert alert-warning p-2">
-                                        <small><strong>Action Required:</strong></small><br>
-                                        <small>Setup Google Authenticator for enhanced security.</small>
+                                        <small><strong>Setup Required:</strong></small><br>
+                                        <small>Complete Google Authenticator setup.</small>
                                     </div>
                                     <a href="{{ route('2fa.setup') }}" class="btn btn-primary btn-sm w-100">
-                                        <i class="fas fa-qrcode"></i> Setup 2FA
+                                        <i class="fas fa-qrcode"></i> Complete Setup
                                     </a>
                                 @else
                                     <div class="alert alert-success p-2">
@@ -109,10 +117,12 @@
                                     <div class="col-md-6">
                                         <p><strong>Last Login:</strong> {{ now()->format('M d, Y H:i') }}</p>
                                         <p><strong>MFA Status:</strong>
-                                            @if (Auth::user()->google2fa_secret)
-                                                <span class="badge bg-success">Active</span>
+                                            @if (Auth::user()->mfa_enabled && Auth::user()->google2fa_secret)
+                                                <span class="badge bg-success">Fully Active</span>
+                                            @elseif (Auth::user()->mfa_enabled)
+                                                <span class="badge bg-warning">Setup Incomplete</span>
                                             @else
-                                                <span class="badge bg-warning">Partial</span>
+                                                <span class="badge bg-secondary">Disabled</span>
                                             @endif
                                         </p>
                                     </div>

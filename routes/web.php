@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/2fa/setup', [App\Http\Controllers\Auth\TwoFAController::class, 'setupPost'])->name('2fa.setup.post');
     Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/2fa/disable', [App\Http\Controllers\ProfileController::class, 'disable2fa'])->name('2fa.disable');
+    Route::post('/2fa/enable', [App\Http\Controllers\ProfileController::class, 'enable2fa'])->name('2fa.enable');
 });
 
 

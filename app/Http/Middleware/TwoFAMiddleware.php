@@ -24,12 +24,12 @@ class TwoFAMiddleware
 
         $user = Auth::user();
 
-        // If user has Google 2FA secret and hasn't verified 2FA in this session
-        if ($user->google2fa_secret && !session('2fa_verified')) {
+        // If user has MFA enabled, Google 2FA secret, and hasn't verified 2FA in this session
+        if ($user->mfa_enabled && $user->google2fa_secret && !session('2fa_verified')) {
             return redirect()->route('2fa.verify');
         }
 
-        // If user doesn't have Google 2FA secret, allow access but suggest setup
+        // If user doesn't have MFA enabled or doesn't have Google 2FA secret, allow access
         return $next($request);
     }
 }
